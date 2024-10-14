@@ -1,0 +1,58 @@
+{
+  "name": "middlewareserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "babel-loader": "^8.3.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "body-parser": "^1.20.2",
+    "dayjs": "^1.11.9",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "fs": "^0.0.1-security",
+    "html-loader": "^4.2.0",
+    "http": "^0.0.1-security",
+    "jest": "^29.5.0",
+    "jsonfile": "^6.1.0",
+    "license-checker-webpack-plugin": "^0.2.1",
+    "lodash": "^4.17.21",
+    "node-loader": "^2.0.0",
+    "nodemailer": "^6.9.4",
+    "request": "^2.79.0",
+    "shelljs": "^0.8.5",
+    "uuidv4": "^6.2.13",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-node-externals": "^3.0.0",
+    "write-to-file": "^1.0.2",
+    "ws": "^7.5.9"
+  },
+  "scripts": {
+    "MUST_MANUAL": "",
+    "insall nexe": "npm i nexe -g",
+    "build": "NODE_ENV=production && rm ./dist/mainService.js && webpack --config ./webpack.config.js",
+    "nexe": "nexe ./mainService.js --target linux-x64-12.16.2 -o ./mainService",
+    "deb": "dpkg -b deb/ airaFace-Server-2.00.01.deb"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e234xp/middlewareServer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/e234xp/middlewareServer/issues"
+  },
+  "homepage": "https://github.com/e234xp/middlewareServer#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.5",
+    "dotenv-webpack": "^8.0.1",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-webpack-plugin": "^4.0.1"
+  }
+}

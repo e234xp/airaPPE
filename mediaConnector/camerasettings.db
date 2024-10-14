@@ -1,0 +1,58 @@
+[
+{
+    "uuid": "334cfe82-3475-4cb2-ba2b-27d77d53b5a1",
+    "name": "camera1",
+    "divice_groups": [
+      "0"
+    ],
+    "show_video" : {
+      "show" : true,
+      "ratio" : 1.0
+    },
+    "use_gpu" : false,
+    "video_source" : {
+      "enable_gpu" : false,
+      "source_type": "rtsp",
+      "source_info": "/11577_50",
+      "ip_address": "192.168.10.208",
+      "port": 11577,
+      "user": "",
+      "pass": "",
+      "fps" : 25,
+      "roi": [
+      ],
+      "object_min_length": 0,
+      "capture_interval": 200,
+      "report_data_server_ip" : "127.0.0.1",
+      "report_data_server_port" : 5552,
+      "report_alive_server_ip" : "127.0.0.1",
+      "report_alive_server_port" : 5551,
+      "algorithm" : {
+        "object_detect_threshold" : 0.45,
+        "object_color" : { "r" : 0, "g" : 255, "b" : 255 },
+        "zone_monitor" : [
+          {
+            "uuid" : "123",
+            "normal_color" : { "r" : 0, "g" : 0, "b" : 255 },
+            "normal_bold" : 2,
+            "enable_dwell" : true,
+            "dwell_over_time" : 100,
+            "dwell_color" : { "r" : 255, "g" : 0, "b" : 0 },
+            "dwell_bold" : 5,
+            "enable_depart" : true,
+            "depart_over_time" : 5000,
+            "depart_color" : { "r" : 255, "g" : 255, "b" : 0 },
+            "depart_bold" : 5,
+            "polygon" : [
+              { "x" : 250, "y" : 250 },
+              { "x" : 1000, "y" : 250 },
+              { "x" : 1000, "y" : 800 },
+              { "x" : 250, "y" : 800 }
+            ],
+            "show_zone" : true
+          }
+        ]
+      }
+    }
+}
+]
