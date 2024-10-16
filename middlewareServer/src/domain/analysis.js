@@ -86,10 +86,17 @@ module.exports = () => {
     });
   }
 
+  function removeByVideoSource(uuid) {
+    global.spiderman.systemlog.generateLog(4, `domain analysis removeByVideoSource ${JSON.stringify(uuid)}`);
+
+    global.spiderman.db.analysis.deleteMany({ video_source: { $in: uuid } });
+  }
+
   return {
     find,
     create,
     modify,
     remove,
+    removeByVideoSource,
   };
 };

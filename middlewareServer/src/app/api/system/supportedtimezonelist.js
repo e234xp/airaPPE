@@ -2,7 +2,7 @@ module.exports = async (data) => {
   global.spiderman.systemlog.generateLog(4, `supportedtimezonelist ${JSON.stringify(data)}`);
 
   const response = await global.spiderman.request.make({
-    url: `http://${global.params.localhost}/system/supportedtimezonelist`,
+    url: `http://${global.params.systemservice}/system/supportedtimezonelist`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

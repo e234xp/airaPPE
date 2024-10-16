@@ -25,7 +25,7 @@ module.exports = () => {
 
     // if (!results[sourceId]) {
     const ret = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/verifyface`,
+      url: `http://${global.params.systemservice}/system/verifyface`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,
@@ -67,7 +67,7 @@ module.exports = () => {
 
     // if (!results[sourceId]) {
     const ret = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/verifycard`,
+      url: `http://${global.params.systemservice}/system/verifycard`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,

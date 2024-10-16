@@ -1,7 +1,7 @@
 module.exports = () => {
   async function resize(base64Image) {
     return (await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/resizeimage`,
+      url: `http://${global.params.systemservice}/system/resizeimage`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,

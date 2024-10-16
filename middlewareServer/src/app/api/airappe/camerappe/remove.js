@@ -14,7 +14,7 @@ module.exports = async (data) => {
     fieldChecks,
   });
 
-  await global.domain.crud.remove({ collection: 'cameras', uuid: data.uuid });
+  await global.domain.camera.remove({ uuid: data.uuid });
 
   global.spiderman.systemlog.generateLog(4, `camera removed ${data.uuid} ok.`);
 

@@ -18,49 +18,9 @@ const fieldChecksData = [
     required: true,
   },
   {
-    fieldName: 'show_video',
-    fieldType: 'object',
-    required: true,
-  },
-  {
-    fieldName: 'use_gpu',
-    fieldType: 'boolean',
-    required: true,
-  },
-  {
     fieldName: 'video_source',
     fieldType: 'nonempty',
     required: true,
-  },
-  {
-    fieldName: 'object_min_length',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'capture_interval',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'report_data_server_ip',
-    fieldType: 'string',
-    required: false,
-  },
-  {
-    fieldName: 'report_data_server_port',
-    fieldType: 'port',
-    required: false,
-  },
-  {
-    fieldName: 'report_alive_server_ip',
-    fieldType: 'string',
-    required: false,
-  },
-  {
-    fieldName: 'report_alive_server_port',
-    fieldType: 'port',
-    required: false,
   },
   {
     fieldName: 'algorithm',
@@ -81,13 +41,51 @@ const algorithmFieldChecks = [
     required: false,
   },
   {
+    fieldName: 'zone_detect',
+    fieldType: 'array',
+    required: false,
+  },
+  {
     fieldName: 'zone_monitor',
     fieldType: 'array',
-    required: true,
+    required: false,
+  },
+  {
+    fieldName: 'cross_line',
+    fieldType: 'array',
+    required: false,
   },
 ];
 
-const zoneFieldChecks = [
+const zoneDetectFieldChecks = [
+  {
+    fieldName: 'show_zone',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'normal_color',
+    fieldType: 'object',
+    required: false,
+  },
+  {
+    fieldName: 'normal_bold',
+    fieldType: 'number',
+    required: false,
+  },
+  {
+    fieldName: 'polygon',
+    fieldType: 'array',
+    required: false,
+  },
+  {
+    fieldName: 'snapshot',
+    fieldType: 'string',
+    required: false,
+  },
+];
+
+const zoneMonitorFieldChecks = [
   {
     fieldName: 'show_zone',
     fieldType: 'boolean',
@@ -148,6 +146,49 @@ const zoneFieldChecks = [
     fieldType: 'array',
     required: false,
   },
+  {
+    fieldName: 'snapshot',
+    fieldType: 'string',
+    required: false,
+  },
+];
+
+const crossLineFieldChecks = [
+  {
+    fieldName: 'line_caption',
+    fieldType: 'string',
+    required: true,
+  },
+  {
+    fieldName: 'line_start',
+    fieldType: 'object',
+    required: true,
+  },
+  {
+    fieldName: 'line_end',
+    fieldType: 'object',
+    required: true,
+  },
+  {
+    fieldName: 'cross_direction',
+    fieldType: 'string',
+    required: false,
+  },
+  {
+    fieldName: 'line_color',
+    fieldType: 'object',
+    required: false,
+  },
+  {
+    fieldName: 'show_line',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'snapshot',
+    fieldType: 'string',
+    required: false,
+  },
 ];
 
 module.exports = async (mData) => {
@@ -171,15 +212,42 @@ module.exports = async (mData) => {
     fieldChecks: [...algorithmFieldChecks],
   });
 
-  if (data.algorithm.zone_monitor[0]) {
-    data.algorithm.zone_monitor = global.spiderman.validate.data({
-      data: data.algorithm.zone_monitor[0],
-      fieldChecks: [...zoneFieldChecks],
-    });
+  if (data.algorithm.zone_detect === undefined
+    && data.algorithm.zone_monitor === undefined
+    && data.algorithm.cross_line === undefined
+  ) {
+    throw Error('Invalid parameter: algorithm (array)');
+  } else {
+
+    if (data.algorithm.zone_detect) {
+      data.algorithm.zone_detect.forEach((item) => {
+        item = global.spiderman.validate.data({
+          data: item,
+          fieldChecks: [...zoneDetectFieldChecks],
+        });
+      });
+    }
+
+    if (data.algorithm.zone_monitor) {
+      data.algorithm.zone_monitor.forEach((item) => {
+        item = global.spiderman.validate.data({
+          data: item,
+          fieldChecks: [...zoneMonitorFieldChecks],
+        });
+      });
+    }
+
+    if (data.algorithm.cross_line) {
+      data.algorithm.cross_line.forEach((item) => {
+        item = global.spiderman.validate.data({
+          data: item,
+          fieldChecks: [...crossLineFieldChecks],
+        });
+      });
+    }
   }
 
   await global.domain.analysis.modify({ uuid, data });
-
   global.spiderman.systemlog.generateLog(4, `analysis modify uuid: ${data.uuid} name: ${data.name})}`);
 
   return {

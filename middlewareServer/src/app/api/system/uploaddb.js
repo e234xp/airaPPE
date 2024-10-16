@@ -16,7 +16,7 @@ module.exports = async (data) => {
   await fileMove(targetZipFile);
 
   const response = await global.spiderman.request.make({
-    url: `http://${global.params.localhost}/system/unzipdb`,
+    url: `http://${global.params.systemservice}/system/unzipdb`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

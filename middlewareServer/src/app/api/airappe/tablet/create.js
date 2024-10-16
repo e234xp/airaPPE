@@ -349,7 +349,7 @@ module.exports = async (data) => {
 
   try {
     const response = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/findlicense`,
+      url: `http://${global.params.systemservice}/system/findlicense`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,

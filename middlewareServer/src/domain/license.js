@@ -5,7 +5,7 @@ module.exports = () => {
     global.spiderman.systemlog.generateLog(4, `domain license add ${JSON.stringify(data)}`);
 
     const response = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/addlicense`,
+      url: `http://${global.params.systemservice}/system/addlicense`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,
@@ -21,7 +21,7 @@ module.exports = () => {
 
   async function findLicense(data) {
     const response = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/findlicense`,
+      url: `http://${global.params.systemservice}/system/findlicense`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,
@@ -35,7 +35,7 @@ module.exports = () => {
 
   async function defaultLicense(data) {
     const response = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/gendefaultlicense`,
+      url: `http://${global.params.systemservice}/system/gendefaultlicense`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,
@@ -51,7 +51,7 @@ module.exports = () => {
 
   async function removeLicense(data) {
     const response = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/removelicense`,
+      url: `http://${global.params.systemservice}/system/removelicense`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,

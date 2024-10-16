@@ -137,13 +137,6 @@ module.exports = () => {
     global.spiderman.db[collection].set(newItems);
   }
 
-  function generateMediaCameraSetting({ type, u}
-
-
-
-
-
-
   return {
     find,
     insertOne,

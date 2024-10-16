@@ -2,7 +2,7 @@ module.exports = async () => {
   global.spiderman.systemlog.generateLog(4, 'downloadsyslog');
 
   await global.spiderman.request.make({
-    url: `http://${global.params.localhost}/system/generatesyslog`,
+    url: `http://${global.params.systemservice}/system/generatesyslog`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

@@ -102,7 +102,7 @@ module.exports = async (data) => {
 
   const { sync_timezone: syncTimeZone, sync_time: syncTime } = await (async () => {
     const { time_zone: timeZone, timestamp } = await global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/timeinfo`,
+      url: `http://${global.params.systemservice}/system/timeinfo`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,

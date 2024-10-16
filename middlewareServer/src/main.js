@@ -32,13 +32,13 @@ function generateParams({
   httpport = 8086,
   httpsEnable = true,
   httpsport = 8446,
-  localhost = '127.0.0.1:8588',
+  systemservice = '127.0.0.1:8588',
   loglevel = 2,
   logreset = 0,
   prefix = 'airappe',
 }) {
   if (process.env.NODE_ENV !== 'production') {
-    localhost = '192.168.10.122:8588';
+    systemservice = '192.168.10.122:8588';
     loglevel = 5;
   } else {
     loglevel = 4;
@@ -63,7 +63,7 @@ function generateParams({
 
   return {
     fileroot,
-    localhost,
+    systemservice,
     dataPath,
     swPath,
     fwPath,
@@ -87,7 +87,7 @@ global.spiderman = spiderman.init();
 
 global.spiderman.systemlog.generateLog(4, `
   fileroot=${global.params.fileroot},
-  localhost=${global.params.localhost},
+  systemservice=${global.params.systemservice},
   dataPath=${global.params.dataPath},
   swPath=${global.params.swPath},
   httpport=${global.params.httpport},

@@ -2,7 +2,7 @@ module.exports = async (data) => {
   global.spiderman.systemlog.generateLog(4, `enableethernetdhcp ${JSON.stringify(data)}`);
 
   const response = await global.spiderman.request.make({
-    url: `http://${global.params.localhost}/system/enableethernetdhcp`,
+    url: `http://${global.params.systemservice}/system/enableethernetdhcp`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

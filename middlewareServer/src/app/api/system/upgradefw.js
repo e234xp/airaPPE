@@ -15,7 +15,7 @@ module.exports = async (data) => {
   await fileMove(targetFile);
 
   await global.spiderman.request.make({
-    url: `http://${global.params.localhost}/system/upgradefw`,
+    url: `http://${global.params.systemservice}/system/upgradefw`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

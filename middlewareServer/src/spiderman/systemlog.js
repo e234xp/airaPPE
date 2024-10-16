@@ -99,7 +99,7 @@ function writeEx({
     const logType = ['', 'error', 'error', 'warning', 'info', 'debug', 'debug'][logLevel];
 
     // return global.spiderman.request.make({
-    //   url: `http://${global.params.localhost}/system/writelog`,
+    //   url: `http://${global.params.systemservice}/system/writelog`,
     //   method: 'POST',
     //   pool: { maxSockets: 10 },
     //   time: true,
@@ -140,19 +140,4 @@ function write({ logType, datetime, logString }) {
   };
 
   client.send(Buffer.from(JSON.stringify(data)), 8589, 'localhost');
-
-  // return global.spiderman.request.make({
-  //   url: `http://${global.params.localhost}/system/writelog`,
-  //   method: 'POST',
-  //   pool: { maxSockets: 10 },
-  //   time: true,
-  //   timeout: 3000,
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   json: {
-  //     log_type: logType,
-  //     log_string: logString,
-  //   },
-  // });
 }

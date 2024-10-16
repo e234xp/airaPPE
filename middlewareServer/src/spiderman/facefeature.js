@@ -1,7 +1,7 @@
 module.exports = () => {
   function engineGenerate(base64Image) {
     return global.spiderman.request.make({
-      url: `http://${global.params.localhost}/system/generatefacefeature`,
+      url: `http://${global.params.systemservice}/system/generatefacefeature`,
       method: 'POST',
       pool: { maxSockets: 10 },
       time: true,

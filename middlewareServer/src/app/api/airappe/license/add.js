@@ -25,7 +25,7 @@ module.exports = async (data) => {
   });
 
   const response = await global.spiderman.request.make({
-    url: `http://${global.params.localhost}/system/addlicense`,
+    url: `http://${global.params.systemservice}/system/addlicense`,
     method: 'POST',
     pool: { maxSockets: 10 },
     time: true,

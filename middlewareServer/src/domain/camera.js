@@ -30,6 +30,8 @@ module.exports = () => {
       collection: 'cameras',
       data,
     });
+
+    global.spiderman.systemlog.generateLog(4, `domain camera create query=[${JSON.stringify(data)}] ok`);
   }
 
   async function modify({ uuid, data }) {
@@ -57,6 +59,14 @@ module.exports = () => {
     });
 
     global.spiderman.systemlog.generateLog(4, `domain camera modify uuid=[${uuid}] name=[${data.name}] ok`);
+  }
+
+  async function remove(uuid) {
+    global.spiderman.systemlog.generateLog(4, `domain camera remove uuid=[${uuid}]`);
+
+    await global.domain.crud.remove({ collection: 'cameras', uuid });
+
+    global.spiderman.systemlog.generateLog(4, `domain camera remove uuid=[${uuid}] ok`);
   }
 
   function count() {
@@ -106,6 +116,7 @@ module.exports = () => {
   return {
     create,
     modify,
+    remove,
     count,
     status,
   };

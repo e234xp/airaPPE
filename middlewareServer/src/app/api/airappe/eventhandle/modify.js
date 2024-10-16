@@ -57,6 +57,11 @@ const fieldChecksData = [
     fieldType: 'object',
     required: false,
   },
+  {
+    fieldName: 'notification',
+    fieldType: 'object',
+    required: false,
+  },
 ];
 
 const lineFieldChecks = [
@@ -280,34 +285,6 @@ const ioboxFieldChecks = [
   },
 ];
 
-// const iopointFieldChecks = [
-//   {
-//     fieldName: 'no',
-//     fieldType: 'number',
-//     required: true,
-//   },
-//   {
-//     fieldName: 'enable',
-//     fieldType: 'boolean',
-//     required: true,
-//   },
-//   {
-//     fieldName: 'default',
-//     fieldType: 'boolean',
-//     required: true,
-//   },
-//   {
-//     fieldName: 'trigger',
-//     fieldType: 'boolean',
-//     required: true,
-//   },
-//   {
-//     fieldName: 'delay',
-//     fieldType: 'number',
-//     required: true,
-//   },
-// ];
-
 module.exports = async (rData) => {
   global.spiderman.systemlog.generateLog(4, `eventhandle find ${rData}`);
 
@@ -321,27 +298,52 @@ module.exports = async (rData) => {
   if (actionType === 'line') {
     data = global.spiderman.validate.data({
       data: rData.data,
-      fieldChecks: [...fieldChecksData, ...lineFieldChecks],
+      fieldChecks: [...fieldChecksData],
+    });
+
+    data.notification = global.spiderman.validate.data({
+      data: data.notification,
+      fieldChecks: [...lineFieldChecks],
     });
   } else if (actionType === 'http') {
     data = global.spiderman.validate.data({
       data: rData.data,
-      fieldChecks: [...fieldChecksData, ...httpFieldChecks],
+      fieldChecks: [...fieldChecksData],
+    });
+
+    data.notification = global.spiderman.validate.data({
+      data: data.notification,
+      fieldChecks: [...httpFieldChecks],
     });
   } else if (actionType === 'mail') {
     data = global.spiderman.validate.data({
       data: rData.data,
-      fieldChecks: [...fieldChecksData, ...mailFieldChecks],
+      fieldChecks: [...fieldChecksData],
+    });
+
+    data.notification = global.spiderman.validate.data({
+      data: data.notification,
+      fieldChecks: [...mailFieldChecks],
     });
   } else if (actionType === 'wiegand') {
     data = global.spiderman.validate.data({
       data: rData.data,
-      fieldChecks: [...fieldChecksData, ...wiegandFieldChecks],
+      fieldChecks: [...fieldChecksData],
+    });
+
+    data.notification = global.spiderman.validate.data({
+      data: data.notification,
+      fieldChecks: [...wiegandFieldChecks],
     });
   } else if (actionType === 'iobox') {
     data = global.spiderman.validate.data({
       data: rData.data,
-      fieldChecks: [...fieldChecksData, ...ioboxFieldChecks],
+      fieldChecks: [...fieldChecksData],
+    });
+
+    data.notification = global.spiderman.validate.data({
+      data: data.notification,
+      fieldChecks: [...ioboxFieldChecks],
     });
   } else {
     global.spiderman.systemlog.writeError('action_type error.');

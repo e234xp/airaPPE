@@ -26,10 +26,14 @@ module.exports = () => {
 
     // data.divice_groups = generateGroups(data.divice_groups);
 
-    await global.domain.crud.insertOne({
+    const result = await global.domain.crud.insertOne({
       collection: 'cameras',
       data,
     });
+
+    await generateMediaSetting({ type: 'device', mode: 'create', uuid: result.uuid });
+
+    global.spiderman.systemlog.generateLog(4, `domain camera create query=[${JSON.stringify(data)}] ok`);
   }
 
   async function modify({ uuid, data }) {
@@ -56,7 +60,20 @@ module.exports = () => {
       data,
     });
 
+    await generateMediaSetting({ type: 'device', mode: 'modify', uuid });
+
     global.spiderman.systemlog.generateLog(4, `domain camera modify uuid=[${uuid}] name=[${data.name}] ok`);
+  }
+
+  async function remove({ uuid }) {
+    global.spiderman.systemlog.generateLog(4, `domain camera remove uuid=[${uuid}]`);
+
+    await global.domain.crud.remove({ collection: 'cameras', uuid });
+    await global.domain.analysis.removeByVideoSource(uuid);
+
+    await generateMediaSetting({ type: 'device', mode: 'remove', uuid });
+
+    global.spiderman.systemlog.generateLog(4, `domain camera remove uuid=[${uuid}] ok`);
   }
 
   function count() {
@@ -74,18 +91,38 @@ module.exports = () => {
     return totalLength || 0;
   }
 
-  // function generateGroups(uuids) {
-  //   global.spiderman.systemlog.generateLog(4, `domain camera generateGroups uuid=[${uuids}]`);
+  function generateMediaSetting({ type, mode, uuid }) {
+    console.log(type, mode, uuid);
 
-  //   const defaultUUid = '0';
-  //   if (!uuids.includes(defaultUUid)) uuids.push(defaultUUid);
+    const mediaSetting = 'mediasetting.db';
 
-  //   const result = global.spiderman.db.videodevicegroups
-  //     .find({ uuid: { $in: uuids } })
-  //     .map(({ uuid }) => uuid);
+    const cameras = global.spiderman.db.cameras.find();
+    const analysis = global.spiderman.db.analysis.find();
 
-  //   return result;
-  // }
+    console.log('mediasetting.db', cameras, analysis);
+
+    for (let i = 0; i < cameras.length; i += 1) {
+      const an = analysis.filter((a) => a.video_source === cameras[i].uuid);
+
+      // if (an.length >= 1) {
+      //   for (let j = 0; j < an.length; j++) {
+      //     let record = { ... cameras[i] };
+      //     record.video_source
+
+      //     delete record.snapshot ;
+
+      //     let record = { ...cameras[i],
+      //       name: `${cameras[i].name}-${an[j].name}`,
+      //       divice_groups: cameras[i].divice_groups,
+      //       show_video: cameras[i].show_video,
+      //       use_gpu: cameras[i].use_gpu,
+      //       video_source: { ...cameras[i], ...{snapshot: undefined} }
+      //       }
+      //     };
+      //   }
+      // }
+    }
+  }
 
   async function status() {
     global.runtimcache.camerasStatus = global.runtimcache.camerasStatus.filter(
@@ -106,6 +143,7 @@ module.exports = () => {
   return {
     create,
     modify,
+    remove,
     count,
     status,
   };
