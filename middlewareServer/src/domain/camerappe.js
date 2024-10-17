@@ -26,12 +26,12 @@ module.exports = () => {
 
     // data.divice_groups = generateGroups(data.divice_groups);
 
-    const result = await global.domain.crud.insertOne({
+    await global.domain.crud.insertOne({
       collection: 'cameras',
       data,
     });
 
-    await generateMediaSetting({ type: 'device', mode: 'create', uuid: result.uuid });
+    await global.domain.crud.generateMediaSetting();
 
     global.spiderman.systemlog.generateLog(4, `domain camera create query=[${JSON.stringify(data)}] ok`);
   }
@@ -60,7 +60,7 @@ module.exports = () => {
       data,
     });
 
-    await generateMediaSetting({ type: 'device', mode: 'modify', uuid });
+    await global.domain.crud.generateMediaSetting();
 
     global.spiderman.systemlog.generateLog(4, `domain camera modify uuid=[${uuid}] name=[${data.name}] ok`);
   }
@@ -71,7 +71,7 @@ module.exports = () => {
     await global.domain.crud.remove({ collection: 'cameras', uuid });
     await global.domain.analysis.removeByVideoSource(uuid);
 
-    await generateMediaSetting({ type: 'device', mode: 'remove', uuid });
+    await global.domain.crud.generateMediaSetting();
 
     global.spiderman.systemlog.generateLog(4, `domain camera remove uuid=[${uuid}] ok`);
   }
@@ -89,39 +89,6 @@ module.exports = () => {
     global.spiderman.systemlog.generateLog(4, `domain camera count ${totalLength || 0}`);
 
     return totalLength || 0;
-  }
-
-  function generateMediaSetting({ type, mode, uuid }) {
-    console.log(type, mode, uuid);
-
-    const mediaSetting = 'mediasetting.db';
-
-    const cameras = global.spiderman.db.cameras.find();
-    const analysis = global.spiderman.db.analysis.find();
-
-    console.log('mediasetting.db', cameras, analysis);
-
-    for (let i = 0; i < cameras.length; i += 1) {
-      const an = analysis.filter((a) => a.video_source === cameras[i].uuid);
-
-      // if (an.length >= 1) {
-      //   for (let j = 0; j < an.length; j++) {
-      //     let record = { ... cameras[i] };
-      //     record.video_source
-
-      //     delete record.snapshot ;
-
-      //     let record = { ...cameras[i],
-      //       name: `${cameras[i].name}-${an[j].name}`,
-      //       divice_groups: cameras[i].divice_groups,
-      //       show_video: cameras[i].show_video,
-      //       use_gpu: cameras[i].use_gpu,
-      //       video_source: { ...cameras[i], ...{snapshot: undefined} }
-      //       }
-      //     };
-      //   }
-      // }
-    }
   }
 
   async function status() {

@@ -1,5 +1,5 @@
 module.exports = () => {
-  // let eventhandleBase = null;
+  const eventLastTrigger = [];
 
   function init() {
     global.spiderman.systemlog.generateLog(4, 'domain worker-result init port 9000');
@@ -29,9 +29,13 @@ module.exports = () => {
         }
 
         console.log('worker-mediaConnector', data);
+
+        const device = global.spiderman.db.cameras.findOne({ uuid: data.source_uuid });
+        if (device) data.source = device;
+
+        triggerByResult(data);
       } catch (e) {
         global.spiderman.systemlog.generateLog(2, `domain worker-result triggerByResult ${e}`);
-        // console.log('triggerByResult message', e);
       }
     });
 
@@ -99,8 +103,15 @@ module.exports = () => {
     const result = (() => {
       const eventhandle = global.spiderman.db.eventhandle.find();
 
+      for (let i = 0; i < eventhandle.length; i += 1) {
+        const elt = eventLastTrigger.find((s) => s.uuid === eventhandle[i].uuid);
+        eventhandle[i] = { ...eventhandle[i], ...(elt || {}) };
+      }
+
+      console.log('aaa', eventhandle);
+
       const filterRules = global.spiderman._.flow([
-        filterByEnabledRule, filterByPersonGroups, filterByDeviceGroups, filterBySchedule,
+        filterByEnabledRule, filterByDuration, filterByAlgorithm, filterBySchedule,
       ]);
 
       return filterRules({ eventhandle, data });
@@ -122,64 +133,72 @@ module.exports = () => {
     };
   }
 
-  function filterByDeviceGroups({ eventhandle, data }) {
+  function filterByDuration({ eventhandle, data }) {
     if (eventhandle.length === 0) return { eventhandle, data };
-
-    // const device = camera || tablet;
-    data.divice_groups = data.divice_groups || [];
-
-    // global.spiderman.systemlog.generateLog(
-    //   4,
-    //   `domain worker-result filterByDeviceGroups divice_groups=${data.divice_groups}`,
-    // );
-
-    const retE = eventhandle.filter((rule) => {
-      rule.divice_groups = rule.divice_groups || [];
-      // console.log('filterByDeviceGroups', rule.divice_groups, data.divice_groups);
-      const groups = data.divice_groups
-        .some((group) => rule.divice_groups
-          .includes(group));
-
-      return groups;
-    });
-
-    global.spiderman.systemlog.generateLog(5, `domain worker-result filterByDeviceGroups actions=${retE.length}`);
-
-    return {
-      eventhandle: retE,
-      data,
-    };
   }
 
-  function filterByPersonGroups({ eventhandle, data }) {
+  function filterByAlgorithm({ eventhandle, data }) {
     if (eventhandle.length === 0) return { eventhandle, data };
-
-    let passager = {};
-    // console.log('filterByPersonGroups data', data);
-    if (data.person) {
-      passager = data.person;
-    } else if (data.nearest_person) {
-      passager = data.nearest_person.person_info;
-    }
-
-    passager.group_list = passager.group_list || [];
-
-    // global.spiderman.systemlog.generateLog(
-    //   4,
-    //   `domain worker-result filterByPersonGroups group_list=${passager.group_list}`,
-    // );
-
-    const retE = eventhandle.filter((rule) => passager.group_list
-      .some((group) => rule.group_list
-        .includes(group)));
-
-    global.spiderman.systemlog.generateLog(5, `domain worker-result filterByPersonGroups actions=${retE.length}`);
-
-    return {
-      eventhandle: retE,
-      data,
-    };
   }
+
+  // function filterByDeviceGroups({ eventhandle, data }) {
+  //   if (eventhandle.length === 0) return { eventhandle, data };
+
+  //   // const device = camera || tablet;
+  //   data.divice_groups = data.divice_groups || [];
+
+  //   // global.spiderman.systemlog.generateLog(
+  //   //   4,
+  //   //   `domain worker-result filterByDeviceGroups divice_groups=${data.divice_groups}`,
+  //   // );
+
+  //   const retE = eventhandle.filter((rule) => {
+  //     rule.divice_groups = rule.divice_groups || [];
+  //     // console.log('filterByDeviceGroups', rule.divice_groups, data.divice_groups);
+  //     const groups = data.divice_groups
+  //       .some((group) => rule.divice_groups
+  //         .includes(group));
+
+  //     return groups;
+  //   });
+
+  //   global.spiderman.systemlog.generateLog(5, `domain worker-result filterByDeviceGroups actions=${retE.length}`);
+
+  //   return {
+  //     eventhandle: retE,
+  //     data,
+  //   };
+  // }
+
+  // function filterByPersonGroups({ eventhandle, data }) {
+  //   if (eventhandle.length === 0) return { eventhandle, data };
+
+  //   let passager = {};
+  //   // console.log('filterByPersonGroups data', data);
+  //   if (data.person) {
+  //     passager = data.person;
+  //   } else if (data.nearest_person) {
+  //     passager = data.nearest_person.person_info;
+  //   }
+
+  //   passager.group_list = passager.group_list || [];
+
+  //   // global.spiderman.systemlog.generateLog(
+  //   //   4,
+  //   //   `domain worker-result filterByPersonGroups group_list=${passager.group_list}`,
+  //   // );
+
+  //   const retE = eventhandle.filter((rule) => passager.group_list
+  //     .some((group) => rule.group_list
+  //       .includes(group)));
+
+  //   global.spiderman.systemlog.generateLog(5, `domain worker-result filterByPersonGroups actions=${retE.length}`);
+
+  //   return {
+  //     eventhandle: retE,
+  //     data,
+  //   };
+  // }
 
   function filterBySchedule({ eventhandle, data }) {
     if (eventhandle.length === 0) return { eventhandle, data };

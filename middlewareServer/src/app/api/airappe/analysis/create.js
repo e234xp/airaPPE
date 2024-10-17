@@ -1,4 +1,3 @@
-const { forEach } = require('lodash');
 const { uuid } = require('uuidv4');
 
 const fieldChecks = [
@@ -45,9 +44,19 @@ const algorithmFieldChecks = [
     fieldType: 'array',
     required: false,
   },
+  {
+    fieldName: 'zone_detect_ppe',
+    fieldType: 'array',
+    required: false,
+  },
 ];
 
 const zoneDetectFieldChecks = [
+  {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
+  },
   {
     fieldName: 'show_zone',
     fieldType: 'boolean',
@@ -76,6 +85,11 @@ const zoneDetectFieldChecks = [
 ];
 
 const zoneMonitorFieldChecks = [
+  {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
+  },
   {
     fieldName: 'show_zone',
     fieldType: 'boolean',
@@ -145,6 +159,11 @@ const zoneMonitorFieldChecks = [
 
 const crossLineFieldChecks = [
   {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
     fieldName: 'line_caption',
     fieldType: 'string',
     required: true,
@@ -181,6 +200,59 @@ const crossLineFieldChecks = [
   },
 ];
 
+const zoneDetectPPEFieldChecks = [
+  {
+    fieldName: 'show_zone',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'normal_color',
+    fieldType: 'object',
+    required: false,
+  },
+  {
+    fieldName: 'alert_color',
+    fieldType: 'object',
+    required: false,
+  },
+  {
+    fieldName: 'detect_helmet',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'detect_no_helmet',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'detect_vest',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'detect_no_vest',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'polygon',
+    fieldType: 'array',
+    required: false,
+  },
+  {
+    fieldName: 'snapshot',
+    fieldType: 'string',
+    required: false,
+  },
+];
+
 module.exports = async (data) => {
   global.spiderman.systemlog.generateLog(4, `analysis create name=[${data.name}]`);
 
@@ -195,6 +267,7 @@ module.exports = async (data) => {
   });
 
   if (data.algorithm.zone_detect === undefined
+    && data.algorithm.zone_detect_ppe === undefined
     && data.algorithm.zone_monitor === undefined
     && data.algorithm.cross_line === undefined
   ) {
@@ -210,9 +283,15 @@ module.exports = async (data) => {
         });
         item.uuid = uuid();
       });
-    }
-
-    if (data.algorithm.zone_monitor) {
+    } else if (data.algorithm.zone_detect_ppe) {
+      data.algorithm.zone_detect_ppe.forEach((item) => {
+        item = global.spiderman.validate.data({
+          data: item,
+          fieldChecks: [...zoneDetectPPEFieldChecks],
+        });
+        item.uuid = uuid();
+      });
+    } else if (data.algorithm.zone_monitor) {
       data.algorithm.zone_monitor.forEach((item) => {
         item = global.spiderman.validate.data({
           data: item,
@@ -220,9 +299,7 @@ module.exports = async (data) => {
         });
         item.uuid = uuid();
       });
-    }
-
-    if (data.algorithm.cross_line) {
+    } else if (data.algorithm.cross_line) {
       data.algorithm.cross_line.forEach((item) => {
         item = global.spiderman.validate.data({
           data: item,

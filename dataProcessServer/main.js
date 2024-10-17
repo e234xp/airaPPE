@@ -73,6 +73,10 @@ try {
     global.dataroot
   );
 
+  var standaloneZoneDetectPPEResult = require("./service/standaloneZoneDetectPPEResult");
+  global.standaloneZoneDetectPPEResult = new standaloneZoneDetectPPEResult(
+    global.dataroot
+  );
 
   var dataProcessor = require("./service/dataProcessor");
   global.dataProcessor = new dataProcessor();

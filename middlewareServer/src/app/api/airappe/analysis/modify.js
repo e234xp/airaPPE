@@ -59,6 +59,11 @@ const algorithmFieldChecks = [
 
 const zoneDetectFieldChecks = [
   {
+    fieldName: 'uuid',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
     fieldName: 'show_zone',
     fieldType: 'boolean',
     required: false,
@@ -86,6 +91,11 @@ const zoneDetectFieldChecks = [
 ];
 
 const zoneMonitorFieldChecks = [
+  {
+    fieldName: 'uuid',
+    fieldType: 'nonempty',
+    required: true,
+  },
   {
     fieldName: 'show_zone',
     fieldType: 'boolean',
@@ -155,6 +165,11 @@ const zoneMonitorFieldChecks = [
 
 const crossLineFieldChecks = [
   {
+    fieldName: 'uuid',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
     fieldName: 'line_caption',
     fieldType: 'string',
     required: true,
@@ -218,7 +233,6 @@ module.exports = async (mData) => {
   ) {
     throw Error('Invalid parameter: algorithm (array)');
   } else {
-
     if (data.algorithm.zone_detect) {
       data.algorithm.zone_detect.forEach((item) => {
         item = global.spiderman.validate.data({

@@ -79,17 +79,6 @@ class dataProcessor {
 
         self.udpServer.bind(5552);
 
-        // self.verifyRecycleLoop = async function () {
-        //     while (true) {
-        //         var tocleanTime = Date.now() - self.verifyInterval;
-        //         var remain = self.verifiedQue.filter(v => {
-        //             return tocleanTime < v.timestamp;
-        //         });
-        //         self.verifiedQue = remain;
-        //         await delay(1000);
-        //     }
-        // };
-
         self.serviceLoop = async function () {
             while (true) {
                 while (self.toProcessQue.length > 0) {
@@ -99,11 +88,11 @@ class dataProcessor {
                     try {
                         msg = msg.toString('utf8');
                         msg = msg.substr(4);
-console.log("555", msg);
+                        // console.log("555", msg);
                         data = JSON.parse(msg.toString());
-                        console.log("serviceLoop", data.timestamp, data.source_uuid, data.algorithm);
+                        // console.log("serviceLoop", data.timestamp, data.source_uuid, data.algorithm);
 
-                        switch(data.algorithm) {
+                        switch (data.algorithm) {
                             case "zone_detect":
                                 // {
                                 //     "timestamp":1728635393442,
@@ -117,7 +106,7 @@ console.log("555", msg);
                                 //         }
                                 //     ]
                                 // }
-                                console.log("serviceLoop", data.data_objects);
+                                console.log("serviceLoop zone_detect", data.data_objects);
                                 break;
                             case "zone_monitor":
                                 // {
@@ -134,19 +123,48 @@ console.log("555", msg);
                                 //     ],
                                 //     "depart":false
                                 // }
-                                console.log("serviceLoop", data.dwell, data.depart);
+                                console.log("serviceLoop zone_monitor", data.dwell, data.depart);
+                                break;
+                            case "cross_line":
+                                // {
+                                //     "timestamp":1729047330145,
+                                //     "source_uuid":"334cfe82-3475-4cb2-ba2b-27d77d53b5a1",
+                                //     "algorithm_uuid":"111",
+                                //     "algorithm":"cross_line",
+                                //     "data_objects":[
+                                //         {"pos":{"x1":0.562036,"y1":0.150129,"x2":0.684233,"y2":0.763836},"age":24,"genger":"F"}
+                                //     ]
+                                // }
+                                console.log("serviceLoop cross_line");
+                                break;
+                            case "zone_detect_ppe":
+                                // {
+                                //     "timestamp":1729045839275,
+                                //     "source_uuid":"334cfe82-3475-4cb2-ba2b-27d77d53b5a1",
+                                //     "algorithm_uuid":"123",
+                                //     "algorithm":"zone_detect_ppe",
+                                //     "data_objects":[
+                                //         {
+                                //             "object_type":"no_vest",
+                                //             "pos":{"x1":0.464844,"y1":0.283498,"x2":0.562886,"y2":0.533355}
+                                //         }
+                                //     ],
+                                //     "image":"/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBA"
+                                // }
+                                console.log("serviceLoop zone_detect_ppe", data.data_objects,
+                                    data.data_objects.length >= 1 ? data.data_objects[0].object_type : "");
                                 break;
                         }
                     }
                     catch (e) {
-                        console.log( e );
+                        console.log(e);
                     }
                     //console.log( data.timestamp )
 
                     if (data) {
-                        var dataToInsert = data ;
+                        var dataToInsert = data;
 
-                        switch(data.algorithm) {
+                        switch (data.algorithm) {
                             case "zone_detect":
                                 global.standaloneZoneDetectResult.insertData(data.timestamp, dataToInsert);
                                 break;
@@ -156,9 +174,12 @@ console.log("555", msg);
                             case "cross_line":
                                 global.standaloneCrossLineResult.insertData(data.timestamp, dataToInsert);
                                 break;
+                            case "zone_detect_ppe":
+                                global.standaloneZoneDetectPPEResult.insertData(data.timestamp, dataToInsert);
+                                break;
                         }
 
-                        var dataToSend = data ;
+                        var dataToSend = data;
 
                         global.sendVerifyResultToMain(dataToSend);
                     }

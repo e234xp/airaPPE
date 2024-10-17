@@ -43,6 +43,8 @@ module.exports = () => {
       collection: 'analysis',
       data,
     });
+
+    await global.domain.crud.generateMediaSetting();
   }
 
   async function modify({ uuid, data }) {
@@ -74,16 +76,20 @@ module.exports = () => {
       data,
     });
 
+    await global.domain.crud.generateMediaSetting();
+
     global.spiderman.systemlog.generateLog(4, `domain analysis modify uuid=[${uuid}] name=[${data.name}] ok`);
   }
 
-  function remove(data) {
+  async function remove(data) {
     global.spiderman.systemlog.generateLog(4, `domain analysis remove ${JSON.stringify(data)}`);
 
     global.domain.crud.remove({
       collection: 'analysis',
       uuid: data.uuid,
     });
+
+    await global.domain.crud.generateMediaSetting();
   }
 
   function removeByVideoSource(uuid) {

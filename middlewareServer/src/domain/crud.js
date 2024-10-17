@@ -1,4 +1,5 @@
 const { uuid: uuidv4 } = require('uuidv4');
+const jsonfile = require('jsonfile');
 
 module.exports = () => {
   function find({
@@ -137,6 +138,35 @@ module.exports = () => {
     global.spiderman.db[collection].set(newItems);
   }
 
+  function generateMediaSetting() {
+    const mediaSetting = `${global.params.dataPath}/db/mediasetting.db`;
+
+    const records = [];
+    const cameras = global.spiderman.db.cameras.find();
+    const analysis = global.spiderman.db.analysis.find();
+
+    for (let i = 0; i < cameras.length; i += 1) {
+      delete cameras[i].snapshot;
+      delete cameras[i].created_time;
+      delete cameras[i].updated_time;
+
+      const an = analysis.filter((a) => a.video_source === cameras[i].uuid);
+      for (let j = 0; j < an.length; j += 1) {
+        delete an[j].video_source;
+
+        // const rec = {
+        //   ...cameras[i],
+        //   ...an[j],
+        // };
+
+        records.push({ ...cameras[i], ...an[j] });
+        // records.push(rec);
+      }
+    }
+
+    jsonfile.writeFileSync(mediaSetting, records, { spaces: 2 });
+  }
+
   return {
     find,
     insertOne,
@@ -145,5 +175,6 @@ module.exports = () => {
     remove,
     filterExistUuids,
     handleRelatedUuids,
+    generateMediaSetting,
   };
 };

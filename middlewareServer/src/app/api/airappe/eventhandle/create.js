@@ -4,30 +4,16 @@ const fieldChecks = [
     fieldType: 'nonempty',
     required: true,
   },
-  {
-    fieldName: 'action_type',
-    fieldType: 'nonempty',
-    required: true,
-  },
+
   {
     fieldName: 'enable',
     fieldType: 'boolean',
     required: true,
   },
   {
-    fieldName: 'group_list',
-    fieldType: 'array',
-    required: true,
-  },
-  {
-    fieldName: 'divice_groups',
-    fieldType: 'array',
-    required: false,
-  },
-  {
-    fieldName: 'temperature_trigger_rule',
+    fieldName: 'duration',
     fieldType: 'number',
-    required: false,
+    required: true,
   },
   {
     fieldName: 'remarks',
@@ -45,9 +31,110 @@ const fieldChecks = [
     required: false,
   },
   {
+    fieldName: 'action_type',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'algorithm',
+    fieldType: 'object',
+    required: true,
+  },
+  {
     fieldName: 'notification',
     fieldType: 'object',
-    required: false,
+    required: true,
+  },
+];
+
+const zoneMonitorChecks = [
+  {
+    fieldName: 'enable',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'dwell',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'depart',
+    fieldType: 'boolean',
+    required: true,
+  },
+];
+const zoneDetectChecks = [
+  {
+    fieldName: 'enable',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'bigger_than',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'bigger_than_over_time',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'less_than',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'less_than_over_time',
+    fieldType: 'number',
+    required: true,
+  },
+];
+
+const crossLineChecks = [
+  {
+    fieldName: 'enable',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'cross',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'cross_reverse',
+    fieldType: 'boolean',
+    required: true,
+  },
+];
+
+const zoneDetectPpeChecks = [
+  {
+    fieldName: 'enable',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'detect_helmet',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'detect_no_helmet',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'detect_vest',
+    fieldType: 'boolean',
+    required: true,
+  },
+  {
+    fieldName: 'detect_no_vest',
+    fieldType: 'boolean',
+    required: true,
   },
 ];
 
@@ -275,54 +362,64 @@ const ioboxFieldChecks = [
 module.exports = async (data) => {
   global.spiderman.systemlog.generateLog(4, `eventhandle create ${JSON.stringify(data)}`);
 
-  const { action_type: actionType } = data;
+  data = global.spiderman.validate.data({
+    data,
+    fieldChecks: [...fieldChecks],
+  });
+
+  const { action_type: actionType, algorithm } = data;
+
+  if (algorithm.zone_detect === undefined
+    && algorithm.zone_monitor === undefined
+    && algorithm.cross_line === undefined
+    && algorithm.zone_detect_ppe === undefined
+  ) {
+    throw Error('Invalid parameter: algorithm (nonempty)');
+  }
+
+  if (data.algorithm.zone_detect) {
+    data.algorithm.zone_detect = global.spiderman.validate.data({
+      data: data.algorithm.zone_detect,
+      fieldChecks: [...zoneDetectChecks],
+    });
+  } else if (data.algorithm.zone_monitor) {
+    data.algorithm.zone_monitor = global.spiderman.validate.data({
+      data: data.algorithm.zone_monitor,
+      fieldChecks: [...zoneMonitorChecks],
+    });
+  } else if (data.algorithm.cross_line) {
+    data.algorithm.cross_line = global.spiderman.validate.data({
+      data: data.algorithm.cross_line,
+      fieldChecks: [...crossLineChecks],
+    });
+  } else if (data.algorithm.zone_detect_ppe) {
+    data.algorithm.zone_detect_ppe = global.spiderman.validate.data({
+      data: data.algorithm.zone_detect_ppe,
+      fieldChecks: [...zoneDetectPpeChecks],
+    });
+  }
 
   if (actionType === 'line') {
-    data = global.spiderman.validate.data({
-      data,
-      fieldChecks: [...fieldChecks],
-    });
-
     data.notification = global.spiderman.validate.data({
       data: data.notification,
       fieldChecks: [...lineFieldChecks],
     });
   } else if (actionType === 'http') {
-    data = global.spiderman.validate.data({
-      data,
-      fieldChecks: [...fieldChecks, ...httpFieldChecks],
-    });
-
     data.notification = global.spiderman.validate.data({
       data: data.notification,
       fieldChecks: [...httpFieldChecks],
     });
   } else if (actionType === 'mail') {
-    data = global.spiderman.validate.data({
-      data,
-      fieldChecks: [...fieldChecks],
-    });
-
     data.notification = global.spiderman.validate.data({
       data: data.notification,
       fieldChecks: [...mailFieldChecks],
     });
   } else if (actionType === 'wiegand') {
-    data = global.spiderman.validate.data({
-      data,
-      fieldChecks: [...fieldChecks],
-    });
-
     data.notification = global.spiderman.validate.data({
       data: data.notification,
       fieldChecks: [...wiegandFieldChecks],
     });
   } else if (actionType === 'iobox') {
-    data = global.spiderman.validate.data({
-      data,
-      fieldChecks: [...fieldChecks],
-    });
-
     data.notification = global.spiderman.validate.data({
       data: data.notification,
       fieldChecks: [...ioboxFieldChecks],
