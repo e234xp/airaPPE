@@ -49,6 +49,11 @@ const fieldChecksData = [
     required: true,
   },
   {
+    fieldName: 'algorithm_uuid',
+    fieldType: 'string',
+    required: false,
+  },
+  {
     fieldName: 'algorithm',
     fieldType: 'object',
     required: true,
@@ -62,44 +67,39 @@ const fieldChecksData = [
 
 const zoneMonitorChecks = [
   {
-    fieldName: 'enable',
+    fieldName: 'dwell_enable',
     fieldType: 'boolean',
     required: true,
   },
   {
-    fieldName: 'dwell',
+    fieldName: 'dwell_time',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'depart_enable',
     fieldType: 'boolean',
     required: true,
   },
   {
-    fieldName: 'depart',
+    fieldName: 'depart_time',
+    fieldType: 'number',
+    required: true,
+  },
+  {
+    fieldName: 'change_enable',
     fieldType: 'boolean',
     required: true,
   },
 ];
 const zoneDetectChecks = [
   {
-    fieldName: 'enable',
-    fieldType: 'boolean',
+    fieldName: 'zone_uuid',
+    fieldType: 'string',
     required: true,
   },
   {
-    fieldName: 'bigger_than',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'bigger_than_over_time',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'less_than',
-    fieldType: 'number',
-    required: true,
-  },
-  {
-    fieldName: 'less_than_over_time',
+    fieldName: 'count',
     fieldType: 'number',
     required: true,
   },
@@ -107,46 +107,21 @@ const zoneDetectChecks = [
 
 const crossLineChecks = [
   {
-    fieldName: 'enable',
-    fieldType: 'boolean',
-    required: true,
-  },
-  {
-    fieldName: 'cross',
-    fieldType: 'boolean',
-    required: true,
-  },
-  {
-    fieldName: 'cross_reverse',
-    fieldType: 'boolean',
+    fieldName: 'line_uuid',
+    fieldType: 'string',
     required: true,
   },
 ];
 
 const zoneDetectPpeChecks = [
   {
-    fieldName: 'enable',
-    fieldType: 'boolean',
+    fieldName: 'helmet',
+    fieldType: 'number',
     required: true,
   },
   {
-    fieldName: 'detect_helmet',
-    fieldType: 'boolean',
-    required: true,
-  },
-  {
-    fieldName: 'detect_no_helmet',
-    fieldType: 'boolean',
-    required: true,
-  },
-  {
-    fieldName: 'detect_vest',
-    fieldType: 'boolean',
-    required: true,
-  },
-  {
-    fieldName: 'detect_no_vest',
-    fieldType: 'boolean',
+    fieldName: 'vest',
+    fieldType: 'number',
     required: true,
   },
 ];
@@ -382,7 +357,7 @@ module.exports = async (mData) => {
 
   const { uuid } = mData;
   let { data } = mData;
-  
+
   data = global.spiderman.validate.data({
     data,
     fieldChecks: [...fieldChecksData],

@@ -26,14 +26,12 @@ module.exports = () => {
   function create(data) {
     global.spiderman.systemlog.generateLog(4, `domain eventhandle create ${JSON.stringify(data)}`);
 
-    console.log('aaa', data.name);
     const repeatItem = global.domain.crud.find({
       collection: 'eventhandle',
       query: { name: data.name },
       sliceShift: 0,
       sliceLength: 10000,
     });
-    console.log('bbb', repeatItem);
 
     if (repeatItem.totalLength >= 1) {
       global.spiderman.systemlog.writeError('Name existed. type: eventhandle');

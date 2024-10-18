@@ -15,6 +15,7 @@ module.exports = (route) => {
     try {
       addCgiCounter(cgi);
       if (!router[cgi]) throw Error('no such cgi');
+      console.log('123', `${cgi} has been called.`);
       // global.spiderman.systemlog.generateLog(4, `${cgi} has been called.`);
       authorize({ req, publicCgi });
 

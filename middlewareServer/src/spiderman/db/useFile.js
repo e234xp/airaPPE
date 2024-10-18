@@ -137,9 +137,9 @@ module.exports = ({
     // console.log('deleteMany', query);
 
     const { data: deletedItems } = global.spiderman.query({ data, queryObject: query });
-    if (deletedItems.length === 0) {
-      throw Error('Item not found.');
-    }
+    // if (deletedItems.length === 0) {
+    //   throw Error('Item not found.');
+    // }
     const filteredData = data.filter((item) => !deletedItems.includes(item));
     writeData(filteredData);
     return deletedItems;

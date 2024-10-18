@@ -55,6 +55,11 @@ const algorithmFieldChecks = [
     fieldType: 'array',
     required: false,
   },
+  {
+    fieldName: 'zone_detect_ppe',
+    fieldType: 'array',
+    required: false,
+  },
 ];
 
 const zoneDetectFieldChecks = [
@@ -62,6 +67,11 @@ const zoneDetectFieldChecks = [
     fieldName: 'uuid',
     fieldType: 'nonempty',
     required: true,
+  },
+  {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
   },
   {
     fieldName: 'show_zone',
@@ -95,6 +105,11 @@ const zoneMonitorFieldChecks = [
     fieldName: 'uuid',
     fieldType: 'nonempty',
     required: true,
+  },
+  {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
   },
   {
     fieldName: 'show_zone',
@@ -170,6 +185,11 @@ const crossLineFieldChecks = [
     required: true,
   },
   {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
     fieldName: 'line_caption',
     fieldType: 'string',
     required: true,
@@ -206,6 +226,64 @@ const crossLineFieldChecks = [
   },
 ];
 
+const zoneDetectPPEFieldChecks = [
+  {
+    fieldName: 'uuid',
+    fieldType: 'nonempty',
+    required: true,
+  },
+  {
+    fieldName: 'report_image',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'show_zone',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'normal_color',
+    fieldType: 'object',
+    required: false,
+  },
+  {
+    fieldName: 'alert_color',
+    fieldType: 'object',
+    required: false,
+  },
+  {
+    fieldName: 'detect_helmet',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'detect_no_helmet',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'detect_vest',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'detect_no_vest',
+    fieldType: 'boolean',
+    required: false,
+  },
+  {
+    fieldName: 'polygon',
+    fieldType: 'array',
+    required: false,
+  },
+  {
+    fieldName: 'snapshot',
+    fieldType: 'string',
+    required: false,
+  },
+];
+
 module.exports = async (mData) => {
   global.spiderman.systemlog.generateLog(4, `analysis modify uuid=[${mData.uuid}] name=[${mData.data.name}]`);
 
@@ -228,37 +306,39 @@ module.exports = async (mData) => {
   });
 
   if (data.algorithm.zone_detect === undefined
+    && data.algorithm.zone_detect_ppe === undefined
     && data.algorithm.zone_monitor === undefined
     && data.algorithm.cross_line === undefined
   ) {
     throw Error('Invalid parameter: algorithm (array)');
-  } else {
-    if (data.algorithm.zone_detect) {
-      data.algorithm.zone_detect.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
-          fieldChecks: [...zoneDetectFieldChecks],
-        });
+  } else if (data.algorithm.zone_detect) {
+    data.algorithm.zone_detect.forEach((item) => {
+      item = global.spiderman.validate.data({
+        data: item,
+        fieldChecks: [...zoneDetectFieldChecks],
       });
-    }
-
-    if (data.algorithm.zone_monitor) {
-      data.algorithm.zone_monitor.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
-          fieldChecks: [...zoneMonitorFieldChecks],
-        });
+    });
+  } else if (data.algorithm.zone_detect_ppe) {
+    data.algorithm.zone_detect_ppe.forEach((item) => {
+      item = global.spiderman.validate.data({
+        data: item,
+        fieldChecks: [...zoneDetectPPEFieldChecks],
       });
-    }
-
-    if (data.algorithm.cross_line) {
-      data.algorithm.cross_line.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
-          fieldChecks: [...crossLineFieldChecks],
-        });
+    });
+  } else if (data.algorithm.zone_monitor) {
+    data.algorithm.zone_monitor.forEach((item) => {
+      item = global.spiderman.validate.data({
+        data: item,
+        fieldChecks: [...zoneMonitorFieldChecks],
       });
-    }
+    });
+  } else if (data.algorithm.cross_line) {
+    data.algorithm.cross_line.forEach((item) => {
+      item = global.spiderman.validate.data({
+        data: item,
+        fieldChecks: [...crossLineFieldChecks],
+      });
+    });
   }
 
   await global.domain.analysis.modify({ uuid, data });

@@ -123,7 +123,7 @@ class dataProcessor {
                                 //     ],
                                 //     "depart":false
                                 // }
-                                console.log("serviceLoop zone_monitor", data.dwell, data.depart);
+                                console.log("serviceLoop zone_monitor", data.dwell, data.dwell_objects, data.depart);
                                 break;
                             case "cross_line":
                                 // {
@@ -135,7 +135,7 @@ class dataProcessor {
                                 //         {"pos":{"x1":0.562036,"y1":0.150129,"x2":0.684233,"y2":0.763836},"age":24,"genger":"F"}
                                 //     ]
                                 // }
-                                console.log("serviceLoop cross_line");
+                                console.log("serviceLoop cross_line", data.data_objects);
                                 break;
                             case "zone_detect_ppe":
                                 // {

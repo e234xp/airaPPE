@@ -4,21 +4,21 @@ const fieldChecks = [
     fieldType: 'nonempty',
     required: true,
   },
-  {
-    fieldName: 'divice_groups',
-    fieldType: 'array',
-    required: false,
-  },
-  {
-    fieldName: 'show_video',
-    fieldType: 'object',
-    required: true,
-  },
-  {
-    fieldName: 'use_gpu',
-    fieldType: 'boolean',
-    required: false,
-  },
+  // {
+  //   fieldName: 'divice_groups',
+  //   fieldType: 'array',
+  //   required: false,
+  // },
+  // {
+  //   fieldName: 'show_video',
+  //   fieldType: 'object',
+  //   required: false,
+  // },
+  // {
+  //   fieldName: 'use_gpu',
+  //   fieldType: 'boolean',
+  //   required: false,
+  // },
   {
     fieldName: 'video_source',
     fieldType: 'object',
@@ -36,11 +36,6 @@ const sourcefieldChecksData = [
     fieldName: 'source_type',
     fieldType: 'nonempty',
     required: true,
-  },
-  {
-    fieldName: 'source_info',
-    fieldType: 'string',
-    required: false,
   },
   {
     fieldName: 'fps',
@@ -118,12 +113,22 @@ const rtspfieldChecksData = [
     fieldType: 'string',
     required: false,
   },
+  {
+    fieldName: 'source_info',
+    fieldType: 'string',
+    required: false,
+  },
 ];
 
 module.exports = async (data) => {
   global.spiderman.systemlog.generateLog(4, `camera create name=[${data.name}]`);
 
+  data.divice_groups = [];
   data.use_gpu = data.use_gpu || false;
+  data.show_video = {
+    show: false,
+    ratio: 1.0,
+  };
 
   data = global.spiderman.validate.data({
     data,

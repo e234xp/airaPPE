@@ -117,22 +117,22 @@ expressApp.use((req, res, next) => {
   next();
 });
 
-expressApp.get('*', (req, res, next) => {
-  // console.log('111', process.env.NODE_ENV, !req.secure);
+// expressApp.get('*', (req, res, next) => {
+//   // console.log('111', process.env.NODE_ENV, !req.secure);
 
-  if (process.env.NODE_ENV !== 'development' && !req.secure) {
-    // console.log('222', req.headers.host);
+//   if (process.env.NODE_ENV !== 'development' && !req.secure) {
+//     // console.log('222', req.headers.host);
 
-    let hp = `${req.headers.host}:`;
-    hp = hp.split(':');
+//     let hp = `${req.headers.host}:`;
+//     hp = hp.split(':');
 
-    // console.log('333', `https://${hp[0]}:${global.params.httpsport}${req.url}`);
+//     // console.log('333', `https://${hp[0]}:${global.params.httpsport}${req.url}`);
 
-    res.redirect(`https://${hp[0]}:${global.params.httpsport}${req.url}`);
-  } else {
-    next();
-  }
-});
+//     res.redirect(`https://${hp[0]}:${global.params.httpsport}${req.url}`);
+//   } else {
+//     next();
+//   }
+// });
 
 global.spiderman.server = (() => {
   let httpServer = null;

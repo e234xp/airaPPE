@@ -202,12 +202,12 @@ const crossLineFieldChecks = [
 
 const zoneDetectPPEFieldChecks = [
   {
-    fieldName: 'show_zone',
+    fieldName: 'report_image',
     fieldType: 'boolean',
     required: false,
   },
   {
-    fieldName: 'report_image',
+    fieldName: 'show_zone',
     fieldType: 'boolean',
     required: false,
   },
@@ -276,37 +276,47 @@ module.exports = async (data) => {
     data.uuid = uuid();
 
     if (data.algorithm.zone_detect) {
-      data.algorithm.zone_detect.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
+      for (let i = 0; i < data.algorithm.zone_detect.length; i += 1) {
+        data.algorithm.zone_detect[i] = global.spiderman.validate.data({
+          data: data.algorithm.zone_detect[i],
           fieldChecks: [...zoneDetectFieldChecks],
         });
-        item.uuid = uuid();
-      });
-    } else if (data.algorithm.zone_detect_ppe) {
-      data.algorithm.zone_detect_ppe.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
+
+        data.algorithm.zone_detect[i].uuid = `${data.uuid}_${uuid()}`;
+      }
+    }
+
+    if (data.algorithm.zone_detect_ppe) {
+      for (let i = 0; i < data.algorithm.zone_detect_ppe.length; i += 1) {
+        data.algorithm.zone_detect_ppe[i] = global.spiderman.validate.data({
+          data: data.algorithm.zone_detect_ppe[i],
           fieldChecks: [...zoneDetectPPEFieldChecks],
         });
-        item.uuid = uuid();
-      });
-    } else if (data.algorithm.zone_monitor) {
-      data.algorithm.zone_monitor.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
+
+        data.algorithm.zone_detect_ppe[i].uuid = `${data.uuid}_${uuid()}`;
+      }
+    }
+
+    if (data.algorithm.zone_monitor) {
+      for (let i = 0; i < data.algorithm.zone_monitor.length; i += 1) {
+        data.algorithm.zone_monitor[i] = global.spiderman.validate.data({
+          data: data.algorithm.zone_monitor[i],
           fieldChecks: [...zoneMonitorFieldChecks],
         });
-        item.uuid = uuid();
-      });
-    } else if (data.algorithm.cross_line) {
-      data.algorithm.cross_line.forEach((item) => {
-        item = global.spiderman.validate.data({
-          data: item,
+
+        data.algorithm.zone_monitor[i].uuid = `${data.uuid}_${uuid()}`;
+      }
+    }
+
+    if (data.algorithm.cross_line) {
+      for (let i = 0; i < data.algorithm.cross_line.length; i += 1) {
+        data.algorithm.cross_line[i] = global.spiderman.validate.data({
+          data: data.algorithm.cross_line[i],
           fieldChecks: [...crossLineFieldChecks],
         });
-        item.uuid = uuid();
-      });
+
+        data.algorithm.cross_line[i].uuid = `${data.uuid}_${uuid()}`;
+      }
     }
   }
 

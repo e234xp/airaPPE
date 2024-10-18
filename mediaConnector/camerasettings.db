@@ -33,6 +33,7 @@
         "zone_monitor" : [
           {
             "uuid" : "123",
+            "show_zone" : true,
             "normal_color" : { "r" : 0, "g" : 0, "b" : 255 },
             "normal_bold" : 2,
             "enable_dwell" : true,
@@ -48,8 +49,7 @@
               { "x" : 1000, "y" : 250 },
               { "x" : 1000, "y" : 800 },
               { "x" : 250, "y" : 800 }
-            ],
-            "show_zone" : true
+            ]
           }
         ]
       }

@@ -146,7 +146,7 @@ module.exports = () => {
     const analysis = global.spiderman.db.analysis.find();
 
     for (let i = 0; i < cameras.length; i += 1) {
-      delete cameras[i].snapshot;
+      delete cameras[i].video_source.snapshot;
       delete cameras[i].created_time;
       delete cameras[i].updated_time;
 
@@ -154,13 +154,32 @@ module.exports = () => {
       for (let j = 0; j < an.length; j += 1) {
         delete an[j].video_source;
 
-        // const rec = {
-        //   ...cameras[i],
-        //   ...an[j],
-        // };
+        if (an[j].algorithm.zone_monitor) {
+          for (let k = 0; k < an[j].algorithm.zone_monitor.length; k += 1) {
+            delete an[j].algorithm.zone_monitor[k].snapshot;
+          }
+        }
 
-        records.push({ ...cameras[i], ...an[j] });
-        // records.push(rec);
+        if (an[j].algorithm.zone_detect) {
+          for (let k = 0; k < an[j].algorithm.zone_detect.length; k += 1) {
+            delete an[j].algorithm.zone_detect[k].snapshot;
+          }
+        }
+
+        if (an[j].algorithm.zone_detect_ppe) {
+          for (let k = 0; k < an[j].algorithm.zone_detect_ppe.length; k += 1) {
+            delete an[j].algorithm.zone_detect_ppe[k].snapshot;
+          }
+        }
+
+        if (an[j].algorithm.cross_line) {
+          for (let k = 0; k < an[j].algorithm.cross_line.length; k += 1) {
+            delete an[j].algorithm.cross_line[k].snapshot;
+          }
+        }
+
+        cameras[i].algorithm = an[j].algorithm;
+        records.push(cameras[i]);
       }
     }
 
